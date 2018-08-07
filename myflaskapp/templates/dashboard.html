@@ -1,6 +1,9 @@
 {% extends 'layout.html' %}
 
 {% block body %}
+
+{% cache 60*10 %}
+
 	<h2>Dashboard <small>Student List</small></h1>
 	<a class="btn btn-success" href="/add_student">Add Student</a>
 	<hr>
@@ -34,4 +37,6 @@
 		{% endfor %}
 		
 	</table>
+{% endcache %}
+
 {% endblock %}

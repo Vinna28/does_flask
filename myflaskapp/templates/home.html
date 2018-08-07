@@ -1,9 +1,14 @@
 {% extends 'layout.html' %}
 
 {% block body %}
+
+{% cache 60*10 %}
+
 	<div class="jumbotron text-center">
 		<h1>Welcome To StudentApp</h1>
 		<p class="lead">Please registration first to input your data</p>
 		
 	</div>
+{% endcache %}
+
 {% endblock %}
