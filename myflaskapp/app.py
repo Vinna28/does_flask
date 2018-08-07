@@ -1,6 +1,7 @@
 from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField
+from flask_caching import Cache
 
 app =Flask(__name__)
 
@@ -11,17 +12,23 @@ app.config['MYSQL_PASSWORD'] = '1'
 app.config['MYSQL_DB'] = 'flaskapp'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+
 # init MySQL
 mysql = MySQL(app)
+
+cache.init_app(app)
 
 
 # Index
 @app.route('/')
+@cache.cached(timeout=30)
 def index():
 	return render_template('home.html')
 
 # Students
 @app.route('/students')
+@cache.cached(timeout=30)
 def students():
 	# Create cursor
 	cur = mysql.connection.cursor()
@@ -47,6 +54,7 @@ class RegisterForm(Form):
 	major = StringField('Major')
 
 @app.route('/add_student', methods=['GET', 'POST'])
+@cache.cached(timeout=30)
 def add_student():
 	form = RegisterForm(request.form)
 	if request.method == 'POST' and form.validate():
@@ -76,6 +84,7 @@ def add_student():
 
 # Edit Student
 @app.route('/edit_student/<string:id>', methods=['GET', 'POST'])
+@cache.cached(timeout=30)
 def edit_article(id):
 	# Create cursor
 	cur = mysql.connection.cursor()
@@ -123,6 +132,7 @@ def edit_article(id):
 
 # Delete Student
 @app.route('/delete_student/<string:id>', methods=['POST'])
+@cache.cached(timeout=30)
 def delete_student(id):
 	# Create cursor
 	cur = mysql.connection.cursor()
